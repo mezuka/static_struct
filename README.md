@@ -1,8 +1,13 @@
 # StaticStruct
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/static_struct`. To experiment with that code, run `bin/console` for an interactive prompt.
+Concert Ruby hashes (of hash-like objects) into Ruby objects.
 
-TODO: Delete this and the text above, and describe your gem
+Key features:
+
+* Nesting hashes and respond to objects `to_hash` methods are allowed to do the convertation;
+* There are no limitations of the nesting;
+* It is not possible to call undefined methods;
+* The converted structure is *readonly*. It's not possible to rewrite defined values someway.
 
 ## Installation
 
@@ -22,7 +27,24 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+class ImplicitHash
+  def to_hash
+    {foo: 'bar'}
+  end
+end
+
+hash = {
+  foo: 'bar',
+  foo_foo: ImplicitHash.new
+}
+
+struct = StaticStruct::Structure.new(hash)
+struct.foo # => 'bar'
+struct.foo_foo.foo # => 'bar'
+struct.foo_fake # => NoMethodError: undefined method `foo_fake'
+struct.foo = 'new bar' # => NoMethodError: undefined method `foo='
+```
 
 ## Development
 
@@ -32,7 +54,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/static_struct. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/mezuka/static_struct. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
