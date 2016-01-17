@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'static_struct/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "static_struct"
+  spec.name          = "static-struct"
   spec.version       = StaticStruct::VERSION
   spec.authors       = ["Mezuka LLC"]
   spec.email         = ["mezuka@mezuka.com"]
@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Convert hashes into static objects.}
   spec.description   = %q{An OpenStruct-like library but with the static-like behavior.
                           I.e. it's not possible to call undefined methods.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/mezuka/static_struct"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
