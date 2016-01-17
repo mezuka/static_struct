@@ -14,7 +14,7 @@ Key features:
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'static_struct'
+gem 'static-struct', require 'static_struct'
 ```
 
 And then execute:
