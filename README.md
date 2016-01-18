@@ -1,6 +1,6 @@
 # StaticStruct
 
-Concert Ruby hashes (or hash-like objects) into Ruby objects.
+Convert Ruby hashes (or hash-like objects) into Ruby objects.
 
 Key features:
 
