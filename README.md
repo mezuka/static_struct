@@ -49,7 +49,7 @@ struct.foo_fake # => NoMethodError: undefined method `foo_fake'
 struct.foo = 'new bar' # => NoMethodError: undefined method `foo='
 struct.enum_for(:each).map do |key, val|
   [key, val]
-end # =>
+end # => [["foo", "bar"], ["foo_foo", #<Enumerator: #<StaticStruct::Structure foo = bar>:each>]]
 ```
 
 ## Development
