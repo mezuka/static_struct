@@ -9,6 +9,7 @@ Key features:
 * Nesting hashes and respond to objects `to_hash` methods are allowed to do the convertation;
 * There are no limitations of the nesting;
 * It is not possible to call undefined methods;
+* The defined dynamically structure is enumerable;
 * The converted structure is *readonly*. It's not possible to rewrite defined values someway.
 
 ## Installation
