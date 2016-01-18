@@ -68,6 +68,14 @@ describe StaticStruct::Structure do
         assert_equal true, array.include?('bar')
         assert_equal true, array.include?(StaticStruct::Structure.new(foo: 'bar'))
       end
+
+      it 'allows to define enumerable method #sum' do
+        assert_equal 10, create_struct(sum: 10).sum
+      end
+
+      it 'allows to define enumerable method #count' do
+        assert_equal 42, create_struct(count: 42).count
+      end
     end
 
     describe 'nesting Hash' do
@@ -84,18 +92,34 @@ describe StaticStruct::Structure do
   end
 
   describe '#to_s' do
-    it 'returns own representation of the object' do
-      assert_equal "#<StaticStruct::Structure foo = bar>", create_struct(foo: 'bar').to_s
+    it 'is overriden' do
+      assert_equal "#<StaticStruct::Structure foo=bar>", create_struct(foo: 'bar').to_s
     end
   end
 
-  describe 'Enumerable' do
-    it 'iterates though the defined methods and their values' do
-      map = create_struct('A foo' => 'bar', 'A foo foo' => 'bar bar').map do |key, val|
+  describe '#inspect' do
+    it 'is overriden' do
+      assert_equal "#<StaticStruct::Structure foo=bar>", create_struct(foo: 'bar').inspect
+    end
+  end
+
+  describe '#each' do
+    it 'is iterable method' do
+      iterator = create_struct('A foo' => 'bar', 'A foo foo' => 'bar bar').enum_for(:each)
+      map = iterator.map do |key, val|
         [key, val]
       end
 
       assert_equal [['A foo', 'bar'], ['A foo foo', 'bar bar']], map
+    end
+
+    it 'is iterable for nesting' do
+      iterator = create_struct(foo: ImplicitHash.new).enum_for(:each)
+      map = iterator.map do |key, val|
+        [key, val]
+      end
+
+      assert_equal ["foo=bar"], map[0][1].map { |key, val| "#{key}=#{val}" }
     end
   end
 end

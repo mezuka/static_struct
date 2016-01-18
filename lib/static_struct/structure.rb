@@ -2,8 +2,6 @@ require 'set'
 
 module StaticStruct
   class Structure
-    include Enumerable
-
     attr_reader :static_methods
 
     def initialize(hash)
@@ -19,13 +17,22 @@ module StaticStruct
       "#<#{joined_line}>"
     end
 
+    def inspect
+      to_s
+    end
+
     def ==(other)
       current_state == other.current_state
     end
 
     def each
       static_methods.each do |m|
-        yield m, public_send(m)
+        method_result = public_send(m)
+        if method_result.is_a?(self.class)
+          yield m, method_result.enum_for(:each)
+        else
+          yield m, public_send(m)
+        end
       end
     end
 
@@ -33,7 +40,7 @@ module StaticStruct
 
     def current_state
       static_methods.map do |method|
-        "#{method} = #{public_send(method)}"
+        "#{method}=#{public_send(method)}"
       end.join(' ')
     end
 
