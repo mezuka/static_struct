@@ -2,6 +2,8 @@ require 'set'
 
 module StaticStruct
   class Structure
+    include Enumerable
+
     attr_reader :static_methods
 
     def initialize(hash)
@@ -19,6 +21,12 @@ module StaticStruct
 
     def ==(other)
       current_state == other.current_state
+    end
+
+    def each
+      static_methods.each do |m|
+        yield m, public_send(m)
+      end
     end
 
     protected
@@ -42,7 +50,7 @@ module StaticStruct
         fail MethodAlreadyDefinedError, "`#{method}' is already defined for #{object}"
       end
 
-      object.static_methods.add(method.to_sym)
+      object.static_methods.add(method.to_s)
       case
       when return_value.is_a?(Array)
         object.define_singleton_method(method) do

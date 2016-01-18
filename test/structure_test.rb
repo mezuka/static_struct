@@ -88,4 +88,14 @@ describe StaticStruct::Structure do
       assert_equal "#<StaticStruct::Structure foo = bar>", create_struct(foo: 'bar').to_s
     end
   end
+
+  describe 'Enumerable' do
+    it 'iterates though the defined methods and their values' do
+      map = create_struct('A foo' => 'bar', 'A foo foo' => 'bar bar').map do |key, val|
+        [key, val]
+      end
+
+      assert_equal [['A foo', 'bar'], ['A foo foo', 'bar bar']], map
+    end
+  end
 end
