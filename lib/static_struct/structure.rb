@@ -27,12 +27,7 @@ module StaticStruct
 
     def each
       static_methods.each do |m|
-        method_result = public_send(m)
-        if method_result.is_a?(self.class)
-          yield m, method_result.enum_for(:each)
-        else
-          yield m, public_send(m)
-        end
+        yield m, public_send(m)
       end
     end
 

@@ -113,13 +113,13 @@ describe StaticStruct::Structure do
       assert_equal [['A foo', 'bar'], ['A foo foo', 'bar bar']], map
     end
 
-    it 'is iterable for nesting' do
+    it 'is does not creates iterator for nesting structs' do
       iterator = create_struct(foo: ImplicitHash.new).enum_for(:each)
       map = iterator.map do |key, val|
         [key, val]
       end
 
-      assert_equal ["foo=bar"], map[0][1].map { |key, val| "#{key}=#{val}" }
+      assert_equal create_struct(ImplicitHash.new), map[0][1]
     end
   end
 end
