@@ -1,21 +1,32 @@
+require 'set'
+
 module StaticStruct
   class Structure
     attr_reader :static_methods
 
     def initialize(hash)
-      @static_methods = []
+      @static_methods = SortedSet.new
       define_structure(self, hash)
     end
 
-    def inspect
-      methods = static_methods.sort.each_with_object({}) do |method, result|
-        result[method] = public_send(method)
-      end
-      "#<#{self.class} #{methods}>"
+    def to_s
+      joined_line = [self.class, current_state].map(&:to_s).select do |str|
+        str.size > 0
+      end.join(' ')
+
+      "#<#{joined_line}>"
     end
 
     def ==(other)
-      inspect == other.inspect
+      current_state == other.current_state
+    end
+
+    protected
+
+    def current_state
+      static_methods.map do |method|
+        "#{method} = #{public_send(method)}"
+      end.join(' ')
     end
 
     private
@@ -28,10 +39,10 @@ module StaticStruct
 
     def safe_define_method(object, method, return_value)
       if object.respond_to?(method)
-        fail MethodAlreadyDefinedError, "`#{method}' is already defined for #{object.inspect}"
+        fail MethodAlreadyDefinedError, "`#{method}' is already defined for #{object}"
       end
 
-      object.static_methods.push(method.to_sym)
+      object.static_methods.add(method.to_sym)
       case
       when return_value.is_a?(Array)
         object.define_singleton_method(method) do

@@ -40,7 +40,7 @@ describe StaticStruct::Structure do
 
       it 'does not break standard methods' do
         assert_raises_exception_with_message(StaticStruct::MethodAlreadyDefinedError,
-          /`send' is already defined for #<StaticStruct::Structure {}>/) do
+          /`send' is already defined for #<StaticStruct::Structure>/) do
           create_struct(send: 'test')
         end
       end
@@ -83,9 +83,9 @@ describe StaticStruct::Structure do
     end
   end
 
-  describe '#inspect' do
+  describe '#to_s' do
     it 'returns own representation of the object' do
-      assert_equal "#<StaticStruct::Structure {:foo=>\"bar\"}>", create_struct(foo: 'bar').inspect
+      assert_equal "#<StaticStruct::Structure foo = bar>", create_struct(foo: 'bar').to_s
     end
   end
 end
