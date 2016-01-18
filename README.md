@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mezuka/static_struct.svg?branch=master)](https://travis-ci.org/mezuka/static_struct)
+
 # StaticStruct
 
 Convert Ruby hashes (or hash-like objects) into Ruby objects.
