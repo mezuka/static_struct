@@ -26,21 +26,21 @@ describe StaticStruct::Structure do
 
       it 'does not define writes for properties' do
         assert_raises_exception_with_message(NoMethodError,
-          /undefined method `foo=' for #<StaticStruct::Structure:.{16}>/) do
+          /undefined method `foo=' for #<StaticStruct::Structure.+>/) do
           struct.foo = 'new bar'
         end
       end
 
       it 'does not respond to missing properties in the Hash' do
         assert_raises_exception_with_message(NoMethodError,
-          /undefined method `foo_bar' for #<StaticStruct::Structure:.{16}>/) do
+          /undefined method `foo_bar' for #<StaticStruct::Structure.+>/) do
           create_struct(from).foo_bar
         end
       end
 
       it 'does not break standard methods' do
         assert_raises_exception_with_message(StaticStruct::MethodAlreadyDefinedError,
-          /send/) do
+          /`send' is already defined for #<StaticStruct::Structure {}>/) do
           create_struct(send: 'test')
         end
       end
@@ -60,6 +60,14 @@ describe StaticStruct::Structure do
           create_struct(Object.new)
         end
       end
+
+      it 'converts arrays to the own structure' do
+        array = create_struct(foo: ['bar', ImplicitHash.new]).foo
+
+        assert_equal 2, array.size
+        assert_equal true, array.include?('bar')
+        assert_equal true, array.include?(StaticStruct::Structure.new(foo: 'bar'))
+      end
     end
 
     describe 'nesting Hash' do
@@ -72,6 +80,12 @@ describe StaticStruct::Structure do
       it 'defines readers for properties with implicit convertion into Hash' do
         assert_equal 'bar', create_struct({foo: ImplicitHash.new}).foo.foo
       end
+    end
+  end
+
+  describe '#inspect' do
+    it 'returns own representation of the object' do
+      assert_equal "#<StaticStruct::Structure {:foo=>\"bar\"}>", create_struct(foo: 'bar').inspect
     end
   end
 end
