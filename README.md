@@ -28,6 +28,30 @@ Or install it yourself as:
 
     $ gem install static_struct
 
+## Usage
+
+```ruby
+class ImplicitHash
+  def to_hash
+    {foo: 'bar'}
+  end
+end
+
+hash = {
+  foo: 'bar',
+  foo_foo: ImplicitHash.new
+}
+
+struct = StaticStruct::Structure.new(hash)
+struct.foo # => 'bar'
+struct.foo_foo.foo # => 'bar'
+struct.foo_fake # => NoMethodError: undefined method `foo_fake'
+struct.foo = 'new bar' # => NoMethodError: undefined method `foo='
+struct.enum_for(:each).map do |key, val|
+  [key, val]
+end # => [["foo", "bar"], ["foo_foo", #<Enumerator: #<StaticStruct::Structure foo = bar>:each>]]
+```
+
 ## Motivation
 
 What the problem solves the gem? Well, it's very straightforward to explain. Lately we are facing the issues
@@ -60,30 +84,6 @@ in methods, there are no variables for the generating methods. This is made inte
 reduce having incorrect states of the generated Ruby structure. As you see the structure is assumed
 to be used only for read-only purpose. But if you have some circumstances where we need to change the
 state feel free to open an issue for the discussion.
-
-## Usage
-
-```ruby
-class ImplicitHash
-  def to_hash
-    {foo: 'bar'}
-  end
-end
-
-hash = {
-  foo: 'bar',
-  foo_foo: ImplicitHash.new
-}
-
-struct = StaticStruct::Structure.new(hash)
-struct.foo # => 'bar'
-struct.foo_foo.foo # => 'bar'
-struct.foo_fake # => NoMethodError: undefined method `foo_fake'
-struct.foo = 'new bar' # => NoMethodError: undefined method `foo='
-struct.enum_for(:each).map do |key, val|
-  [key, val]
-end # => [["foo", "bar"], ["foo_foo", #<Enumerator: #<StaticStruct::Structure foo = bar>:each>]]
-```
 
 ## Development
 
