@@ -55,6 +55,12 @@ Others say that we could use [ostruct](http://ruby-doc.org/stdlib-2.0.0/libdoc/o
 important issue - when there is no defined property on the structure there should be an **exception**.
 Only this way we make a profit reducing bugs and debugging time.
 
+As you noticed the library creates an immutable Ruby objects structure, all the state is holding
+in methods, there are no variables for the generating methods. This is made intentionally in order to
+reduce having incorrect states of the generated Ruby structure. As you see the structure is assumed
+to be used only for read-only purpose. But if you have some circumstances where we need to change the
+state feel free to open an issue for the discussion.
+
 ## Usage
 
 ```ruby
