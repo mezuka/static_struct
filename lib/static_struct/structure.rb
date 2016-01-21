@@ -6,7 +6,7 @@ module StaticStruct
 
     def initialize(hash)
       @static_methods = SortedSet.new
-      define_structure(self, hash)
+      define_structure(hash)
     end
 
     def to_s
@@ -41,21 +41,21 @@ module StaticStruct
 
     private
 
-    def define_structure(parent, hash)
+    def define_structure(hash)
       Hash(hash).each do |key, val|
-        safe_define_method(parent, key, val)
+        safe_define_method(key, val)
       end
     end
 
-    def safe_define_method(object, method, return_value)
-      if object.respond_to?(method)
-        fail MethodAlreadyDefinedError, "`#{method}' is already defined for #{object}"
+    def safe_define_method(method, return_value)
+      if respond_to?(method)
+        fail MethodAlreadyDefinedError, "`#{method}' is already defined for #{self}"
       end
 
-      object.static_methods.add(method.to_s)
+      static_methods.add(method.to_s)
       case
       when return_value.is_a?(Array)
-        object.define_singleton_method(method) do
+        define_singleton_method(method) do
           return_value.map do |array_value|
             if array_value.respond_to?(:to_hash)
               Structure.new(array_value)
@@ -65,11 +65,11 @@ module StaticStruct
           end
         end
       when return_value.is_a?(Hash)
-        object.define_singleton_method(method) { Structure.new(return_value) }
+        define_singleton_method(method) { Structure.new(return_value) }
       when return_value.respond_to?(:to_hash)
-        object.define_singleton_method(method) { Structure.new(Hash(return_value)) }
+        define_singleton_method(method) { Structure.new(Hash(return_value)) }
       else
-        object.define_singleton_method(method) { return_value }
+        define_singleton_method(method) { return_value }
       end
     end
   end
