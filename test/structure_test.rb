@@ -122,4 +122,18 @@ describe StaticStruct::Structure do
       assert_equal create_struct(ImplicitHash.new), map[0][1]
     end
   end
+
+  describe '#to_hash' do
+    it 'creates hash pbject' do
+      struct = create_struct('A foo' => 'bar', 'A foo foo' => 'bar bar')
+
+      assert_equal({ 'A foo' => 'bar', 'A foo foo' => 'bar bar' }, struct.to_hash)
+    end
+
+    it 'creates hash for nesting structs' do
+      struct = create_struct(foo: ImplicitHash.new)
+
+      assert_equal({ 'foo' => { 'foo' => 'bar' } }, struct.to_hash)
+    end
+  end
 end

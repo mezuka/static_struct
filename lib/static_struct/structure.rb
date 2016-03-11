@@ -31,6 +31,13 @@ module StaticStruct
       end
     end
 
+    def to_hash
+      static_methods.each_with_object({}) do |m, result|
+        value = public_send(m)
+        result[m] = value.is_a?(StaticStruct::Structure) ? value.to_hash : value
+      end
+    end
+
     protected
 
     def current_state
